@@ -52,7 +52,7 @@ public class CardRegistry {
         ALL_CARDS.add(new Card.Builder("Marcus: Master of Unicycle", CardType.WATER, 80)
                 .attack(new Attack("The Ride", 15, 1, CardType.WATER))
                 .attack(new Attack("Unicycle Rampage", 50, 2, CardType.WATER))
-                .image("/com/wecib/images/Marcus: Master of Unicycle.png")
+                .image("/com/wecib/images/Marcus Master of Unicycle.png")
                 .build());
 
         ALL_CARDS.add(new Card.Builder("Parthicia", CardType.AURA, 115)
