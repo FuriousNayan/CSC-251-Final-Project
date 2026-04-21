@@ -6,6 +6,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.scene.layout.HBox;
@@ -13,7 +14,7 @@ import javafx.util.Duration;
 
 public class TitleScreen extends VBox {
 
-    public TitleScreen(Runnable onStart) {
+    public TitleScreen(StackPane sceneRoot, Runnable onStart) {
         setAlignment(Pos.CENTER);
         setSpacing(0);
         getStyleClass().add("title-screen");
@@ -65,6 +66,10 @@ public class TitleScreen extends VBox {
         Label hint = new Label("Pick cards in the draft, then battle head-to-head");
         hint.getStyleClass().add("hint-text");
 
+        Button howToPlay = new Button("How to play");
+        howToPlay.getStyleClass().add("secondary-button");
+        howToPlay.setOnAction(e -> GameHelpOverlay.show(sceneRoot));
+
         Region bottomSpacer = new Region();
         bottomSpacer.setPrefHeight(30);
 
@@ -72,7 +77,7 @@ public class TitleScreen extends VBox {
         version.getStyleClass().add("version-text");
 
         getChildren().addAll(topSpacer, logoRow, title, tagline, divider, subtitle,
-                midSpacer, startButton, hint, bottomSpacer, version);
+                midSpacer, startButton, howToPlay, hint, bottomSpacer, version);
 
         FadeTransition fadeIn = new FadeTransition(Duration.millis(600), this);
         fadeIn.setFromValue(0); fadeIn.setToValue(1);

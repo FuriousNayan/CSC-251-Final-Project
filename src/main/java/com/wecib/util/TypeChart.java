@@ -2,7 +2,10 @@ package com.wecib.util;
 
 import com.wecib.model.CardType;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 
 public class TypeChart {
@@ -77,5 +80,55 @@ public class TypeChart {
         if (mult > 1.0) return "Super effective!";
         if (mult < 1.0) return "Not very effective...";
         return "";
+    }
+
+    /**
+     * Tooltip: which attack types hit this defending type for double or half damage.
+     */
+    public static String defensiveHint(CardType defending) {
+        List<String> weakTo = new ArrayList<>();
+        List<String> resists = new ArrayList<>();
+        for (CardType attackType : CardType.values()) {
+            double m = getMultiplier(attackType, defending);
+            if (m > 1.0) weakTo.add(attackType.displayName());
+            else if (m < 1.0) resists.add(attackType.displayName());
+        }
+        Collections.sort(weakTo);
+        Collections.sort(resists);
+        StringBuilder sb = new StringBuilder();
+        sb.append(defending.displayName()).append(" (defending):\n");
+        if (!weakTo.isEmpty()) {
+            sb.append("Weak to: ").append(String.join(", ", weakTo));
+        }
+        if (!weakTo.isEmpty() && !resists.isEmpty()) sb.append("\n");
+        if (!resists.isEmpty()) {
+            sb.append("Resists: ").append(String.join(", ", resists));
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Tooltip: how this attack type fares against other types (offense).
+     */
+    public static String offensiveHint(CardType attackType) {
+        List<String> strong = new ArrayList<>();
+        List<String> weak = new ArrayList<>();
+        for (CardType def : CardType.values()) {
+            double m = getMultiplier(attackType, def);
+            if (m > 1.0) strong.add(def.displayName());
+            else if (m < 1.0) weak.add(def.displayName());
+        }
+        Collections.sort(strong);
+        Collections.sort(weak);
+        StringBuilder sb = new StringBuilder();
+        sb.append(attackType.displayName()).append(" attacks:\n");
+        if (!strong.isEmpty()) {
+            sb.append("Strong vs: ").append(String.join(", ", strong));
+        }
+        if (!strong.isEmpty() && !weak.isEmpty()) sb.append("\n");
+        if (!weak.isEmpty()) {
+            sb.append("Weak vs: ").append(String.join(", ", weak));
+        }
+        return sb.toString();
     }
 }

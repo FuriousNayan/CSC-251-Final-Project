@@ -3,10 +3,12 @@ package com.wecib.ui;
 import com.wecib.model.Attack;
 import com.wecib.model.Card;
 import com.wecib.model.CardType;
+import com.wecib.util.TypeChart;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -136,11 +138,12 @@ public class CardView extends VBox {
         getChildren().addAll(headerBar, body);
 
         if (card != null) {
-            setCard(card);
+            setCard(card, null);
         }
     }
 
-    public void setCard(Card card) {
+    /** @param matchupOpponent when non-null (e.g. in battle), attack tooltips include effectiveness vs this card */
+    public void setCard(Card card, Card matchupOpponent) {
         if (card == null) {
             nameLabel.setText("");
             hpLabel.setText("");
@@ -149,6 +152,8 @@ public class CardView extends VBox {
             attacksBox.getChildren().clear();
             imageView.setImage(null);
             typeLabel.setText("");
+            Tooltip.install(typeDot, null);
+            typeLabel.setTooltip(null);
             getStyleClass().removeIf(s -> s.startsWith("type-"));
             return;
         }
@@ -165,6 +170,12 @@ public class CardView extends VBox {
         hpSuffix.setText("HP");
         typeLabel.setText(card.getType().displayName());
         updateHp(card);
+
+        Tooltip defendTip = new Tooltip(TypeChart.defensiveHint(card.getType()));
+        defendTip.setWrapText(true);
+        defendTip.setMaxWidth(420);
+        Tooltip.install(typeDot, defendTip);
+        Tooltip.install(typeLabel, defendTip);
 
         getStyleClass().removeIf(s -> s.startsWith("type-"));
         getStyleClass().add("type-" + card.getType().name().toLowerCase());
@@ -208,8 +219,37 @@ public class CardView extends VBox {
             atkDmg.getStyleClass().add("attack-damage");
 
             atkRow.getChildren().addAll(atkName, atkDmg);
+
+            Tooltip atkTip = new Tooltip(buildAttackTooltip(atk, matchupOpponent));
+            atkTip.setWrapText(true);
+            atkTip.setMaxWidth(420);
+            Tooltip.install(atkRow, atkTip);
+
             attacksBox.getChildren().add(atkRow);
         }
+    }
+
+    public void setCard(Card card) {
+        setCard(card, null);
+    }
+
+    private static String buildAttackTooltip(Attack atk, Card matchupOpponent) {
+        StringBuilder sb = new StringBuilder();
+        if (matchupOpponent != null) {
+            double mult = TypeChart.getMultiplier(atk.getType(), matchupOpponent.getType());
+            int est = (int) (atk.getDamage() * mult);
+            sb.append("vs ").append(matchupOpponent.getName())
+                    .append(" (").append(matchupOpponent.getType().displayName()).append(")\n");
+            if (mult > 1.0) {
+                sb.append("Super effective — ~").append(est).append(" damage (2×)\n\n");
+            } else if (mult < 1.0) {
+                sb.append("Not very effective — ~").append(est).append(" damage (0.5×)\n\n");
+            } else {
+                sb.append("Neutral — ").append(est).append(" damage (1×)\n\n");
+            }
+        }
+        sb.append(TypeChart.offensiveHint(atk.getType()));
+        return sb.toString();
     }
 
     private void fitLabelFont(Label label, String text, double maxWidth, double defaultSize, double minSize, boolean bold) {

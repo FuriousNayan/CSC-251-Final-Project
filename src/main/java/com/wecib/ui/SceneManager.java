@@ -3,6 +3,7 @@ package com.wecib.ui;
 import com.wecib.engine.BattleEngine;
 import com.wecib.engine.DraftEngine;
 import com.wecib.engine.PlayerState;
+import javafx.application.Platform;
 import javafx.scene.layout.StackPane;
 
 public class SceneManager {
@@ -17,8 +18,11 @@ public class SceneManager {
 
     public void showTitleScreen() {
         root.getChildren().clear();
-        TitleScreen title = new TitleScreen(this::startDraft);
+        TitleScreen title = new TitleScreen(root, this::startDraft);
         root.getChildren().add(title);
+        if (!HelpPreferences.hasSeenHelp()) {
+            Platform.runLater(() -> GameHelpOverlay.show(root, HelpPreferences::markHelpSeen));
+        }
     }
 
     private void startDraft() {
@@ -35,7 +39,7 @@ public class SceneManager {
         BattleEngine battleEngine = new BattleEngine(player, opponent);
 
         root.getChildren().clear();
-        BattleScreen battleScreen = new BattleScreen(battleEngine, this::showGameOver);
+        BattleScreen battleScreen = new BattleScreen(battleEngine, root, this::showGameOver);
         root.getChildren().add(battleScreen);
     }
 

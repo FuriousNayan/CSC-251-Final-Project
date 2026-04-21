@@ -1,10 +1,13 @@
 /* ============================================================
-   WECIB CARD GAME - Pokemon-Inspired Stylesheet (1280x900)
+   WECIB CARD GAME - Pokemon-Inspired Stylesheet
+   (window scales to fit the screen; baseline 1600×900, 16:9)
    ============================================================ */
 
 /* ===== ROOT ===== */
 .root-pane {
     -fx-background-color: linear-gradient(to bottom, #0a0e17, #111827);
+    /* Inner breathing room so UI does not touch the window frame */
+    -fx-padding: 14 28 18 28;
 }
 
 /* ===== TITLE SCREEN ===== */
@@ -398,6 +401,17 @@
         #111827 100%);
 }
 
+/* Scroll only when the board is taller than the window */
+.battle-board-scroll {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+    -fx-padding: 0;
+}
+
+.battle-board-scroll .viewport {
+    -fx-background-color: transparent;
+}
+
 /* Opponent zone */
 .opponent-zone {
     -fx-background-color: linear-gradient(to bottom, rgba(239,68,68,0.06), rgba(239,68,68,0.02));
@@ -721,4 +735,115 @@
     -fx-text-fill: #94a3b8;
     -fx-background-color: rgba(100,116,139,0.1);
     -fx-border-color: rgba(100,116,139,0.2);
+}
+
+/* ===== HELP / TUTORIAL ===== */
+.secondary-button {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-padding: 10 28;
+    -fx-background-color: rgba(59, 130, 246, 0.15);
+    -fx-text-fill: #93c5fd;
+    -fx-border-color: rgba(59, 130, 246, 0.45);
+    -fx-border-width: 2;
+    -fx-border-radius: 18;
+    -fx-background-radius: 18;
+    -fx-cursor: hand;
+}
+
+.secondary-button:hover {
+    -fx-background-color: rgba(59, 130, 246, 0.28);
+    -fx-text-fill: #bfdbfe;
+    -fx-border-color: #60a5fa;
+}
+
+.help-panel {
+    -fx-background-color: linear-gradient(to bottom, #1e293b, #0f172a);
+    -fx-border-color: rgba(59, 130, 246, 0.4);
+    -fx-border-width: 2;
+    -fx-border-radius: 16;
+    -fx-background-radius: 16;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.75), 40, 0, 0, 8);
+}
+
+.help-title {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #f8fafc;
+}
+
+.help-intro {
+    -fx-font-size: 14px;
+    -fx-text-fill: #94a3b8;
+}
+
+.help-section-header {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #60a5fa;
+    -fx-padding: 8 0 0 0;
+}
+
+.help-body {
+    -fx-font-size: 13px;
+    -fx-text-fill: #cbd5e1;
+}
+
+.help-chart-box {
+    -fx-padding: 10 12;
+    -fx-background-color: rgba(15, 23, 42, 0.6);
+    -fx-background-radius: 10;
+    -fx-border-color: rgba(71, 85, 105, 0.5);
+    -fx-border-radius: 10;
+}
+
+.help-chart-row {
+    -fx-font-size: 11px;
+    -fx-text-fill: #e2e8f0;
+}
+
+.help-scroll {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.help-scroll .viewport {
+    -fx-background-color: transparent;
+}
+
+.help-close-button {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-padding: 12 40;
+    -fx-background-color: linear-gradient(to bottom, #2563eb, #1d4ed8);
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #60a5fa;
+    -fx-border-width: 2;
+    -fx-border-radius: 20;
+    -fx-background-radius: 20;
+    -fx-cursor: hand;
+}
+
+.help-close-button:hover {
+    -fx-background-color: linear-gradient(to bottom, #3b82f6, #2563eb);
+}
+
+.battle-help-button {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-min-width: 36px;
+    -fx-min-height: 36px;
+    -fx-padding: 0;
+    -fx-background-color: rgba(30, 41, 59, 0.92);
+    -fx-text-fill: #93c5fd;
+    -fx-border-color: rgba(59, 130, 246, 0.55);
+    -fx-border-width: 2;
+    -fx-border-radius: 18;
+    -fx-background-radius: 18;
+    -fx-cursor: hand;
+}
+
+.battle-help-button:hover {
+    -fx-background-color: rgba(59, 130, 246, 0.25);
+    -fx-text-fill: #e0f2fe;
 }

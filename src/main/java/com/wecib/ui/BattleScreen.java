@@ -19,6 +19,8 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Tooltip;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.HBox;
@@ -58,7 +60,7 @@ public class BattleScreen extends VBox {
     private Timeline playerPulse;
     private Timeline opponentPulse;
 
-    public BattleScreen(BattleEngine battleEngine, Consumer<Boolean> onBattleEnd) {
+    public BattleScreen(BattleEngine battleEngine, StackPane sceneRoot, Consumer<Boolean> onBattleEnd) {
         this.battleEngine = battleEngine;
         this.onBattleEnd = onBattleEnd;
         getStyleClass().add("battle-screen");
@@ -162,19 +164,39 @@ public class BattleScreen extends VBox {
         flashOverlay.setFill(Color.WHITE);
         flashOverlay.setOpacity(0);
 
-        boardPane.getChildren().addAll(boardContent, flashOverlay, damagePopup);
+        ScrollPane boardScroll = new ScrollPane(boardContent);
+        boardScroll.setFitToWidth(true);
+        boardScroll.setPannable(false);
+        boardScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        boardScroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        boardScroll.getStyleClass().add("battle-board-scroll");
+
+        boardPane.getChildren().addAll(boardScroll, flashOverlay, damagePopup);
+
+        Button helpBtn = new Button("?");
+        helpBtn.getStyleClass().add("battle-help-button");
+        helpBtn.setFocusTraversable(false);
+        helpBtn.setOnAction(e -> GameHelpOverlay.show(sceneRoot));
+        StackPane.setAlignment(helpBtn, Pos.TOP_RIGHT);
+        helpBtn.setTranslateX(-14);
+        helpBtn.setTranslateY(10);
+        boardPane.getChildren().add(helpBtn);
 
         // Action panel
         VBox actionPanel = new VBox(5);
         actionPanel.setAlignment(Pos.CENTER);
         actionPanel.getStyleClass().add("action-panel");
         actionPanel.setPadding(new Insets(8, 30, 10, 30));
-        actionPanel.setMinHeight(140);
+        actionPanel.setMinHeight(120);
 
         HBox energyRow = new HBox(8);
         energyRow.setAlignment(Pos.CENTER);
         Label energyTitle = new Label("ENERGY");
         energyTitle.getStyleClass().add("energy-title");
+        Tooltip energyTip = new Tooltip(GameHelpOverlay.ENERGY_TOOLTIP);
+        energyTip.setWrapText(true);
+        energyTip.setMaxWidth(380);
+        energyTitle.setTooltip(energyTip);
         energyDots = new HBox(6);
         energyDots.setAlignment(Pos.CENTER);
         energyRow.getChildren().addAll(energyTitle, energyDots);
@@ -297,8 +319,8 @@ public class BattleScreen extends VBox {
         Card playerCard = battleEngine.getPlayer().getActiveCard();
         Card opponentCard = battleEngine.getOpponent().getActiveCard();
 
-        playerCardView.setCard(playerCard);
-        opponentCardView.setCard(opponentCard);
+        playerCardView.setCard(playerCard, opponentCard);
+        opponentCardView.setCard(opponentCard, playerCard);
 
         refreshBench(playerBench, battleEngine.getPlayer().getBench(), true);
         refreshBench(opponentBench, battleEngine.getOpponent().getBench(), false);
