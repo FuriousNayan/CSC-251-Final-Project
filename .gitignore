@@ -1,2 +1,2 @@
-target/
+target/*
 !target/wecib-card-game-1.0-SNAPSHOT.jar
