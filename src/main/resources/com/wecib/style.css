@@ -202,7 +202,7 @@
 }
 
 .card-name {
-    -fx-font-size: 14px;
+    -fx-font-size: 11px;
     -fx-font-weight: bold;
     -fx-text-fill: #f1f5f9;
 }
@@ -221,7 +221,7 @@
 }
 
 .card-small .card-name {
-    -fx-font-size: 11px;
+    -fx-font-size: 9px;
 }
 
 .card-small .card-hp-number {
@@ -234,7 +234,7 @@
 }
 
 .card-large .card-name {
-    -fx-font-size: 16px;
+    -fx-font-size: 12px;
 }
 
 .card-large .card-hp-number {

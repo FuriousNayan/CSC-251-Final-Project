@@ -41,6 +41,7 @@ public class CardRegistry {
         ALL_CARDS.add(new Card.Builder("Dennis the Menace", CardType.FIRE, 95)
                 .attack(new Attack("Mazda Spin", 30, 1, CardType.FIRE))
                 .attack(new Attack("Triple Flip Reset", 70, 2, CardType.FIRE))
+                .image("/com/wecib/images/dennis.png")
                 .build());
 
         ALL_CARDS.add(new Card.Builder("Karim the Crop", CardType.DIRT, 110)
@@ -64,6 +65,7 @@ public class CardRegistry {
         ALL_CARDS.add(new Card.Builder("Lewkie", CardType.DIRT, 130)
                 .attack(new Attack("Dirt Punch", 20, 1, CardType.DIRT))
                 .attack(new Attack("Brick by Brick", 70, 2, CardType.DIRT))
+                .image("/com/wecib/images/lucas.png")
                 .build());
         
         ALL_CARDS.add(new Card.Builder("Maxwell", CardType.FIRE, 100)

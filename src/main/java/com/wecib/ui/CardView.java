@@ -31,6 +31,8 @@ public class CardView extends VBox {
         {130, 170},
     };
     private double scale = 1.0;
+    /** Non-null while a card is bound; used to refit the name when {@link #setScaledSize} runs. */
+    private String displayedName;
 
     private final Size size;
     private final Label nameLabel;
@@ -119,6 +121,27 @@ public class CardView extends VBox {
         hpBar.setPrefHeight(small ? 5 : 7);
         hpBar.setMaxHeight(small ? 5 : 7);
 
+        typeLabel = new Label();
+        typeLabel.getStyleClass().add("card-type-badge");
+
+        attacksBox = new VBox(small ? 2 : (large ? 5 : 4));
+        attacksBox.getStyleClass().add("card-attacks");
+        attacksBox.setPadding(new Insets(small ? 2 : 4, 0, 0, 0));
+
+        body.getChildren().addAll(imageContainer, hpBar, typeLabel, attacksBox);
+
+        if (small) {
+            attacksBox.setVisible(false);
+            attacksBox.setManaged(false);
+            typeLabel.setVisible(false);
+            typeLabel.setManaged(false);
+        }
+
+        getChildren().addAll(headerBar, body);
+
+        if (card != null) {
+            setCard(card, null);
+        }
     }
 
     // Method to scale the card view dynamically
@@ -145,37 +168,17 @@ public class CardView extends VBox {
         // Update hp bar
         hpBar.setPrefHeight((size == Size.SMALL ? 5 : 7) * scale);
         hpBar.setMaxHeight((size == Size.SMALL ? 5 : 7) * scale);
-        // Update font sizes if needed (optional)
-        // ...
-    }
-
-        typeLabel = new Label();
-        typeLabel.getStyleClass().add("card-type-badge");
-
-        attacksBox = new VBox(small ? 2 : (large ? 5 : 4));
-        attacksBox.getStyleClass().add("card-attacks");
-        attacksBox.setPadding(new Insets(small ? 2 : 4, 0, 0, 0));
-
-        body.getChildren().addAll(imageContainer, hpBar, typeLabel, attacksBox);
-
-        if (small) {
-            attacksBox.setVisible(false);
-            attacksBox.setManaged(false);
-            typeLabel.setVisible(false);
-            typeLabel.setManaged(false);
-        }
-
-        getChildren().addAll(headerBar, body);
-
-        if (card != null) {
-            setCard(card, null);
+        if (displayedName != null) {
+            applyCardNameTypography();
         }
     }
 
     /** @param matchupOpponent when non-null (e.g. in battle), attack tooltips include effectiveness vs this card */
     public void setCard(Card card, Card matchupOpponent) {
         if (card == null) {
+            displayedName = null;
             nameLabel.setText("");
+            nameLabel.setMaxWidth(Double.MAX_VALUE);
             hpLabel.setText("");
             hpSuffix.setText("");
             hpBar.setProgress(0);
@@ -188,13 +191,8 @@ public class CardView extends VBox {
             return;
         }
 
-        nameLabel.setText(card.getName());
-        double cardW = DIMENSIONS[size.ordinal()][0];
-        boolean isSmall = size == Size.SMALL;
-        double reserved = isSmall ? 55 : 75;
-        double nameAvail = cardW - reserved;
-        double defaultFont = isSmall ? 11 : (size == Size.LARGE ? 16 : 14);
-        fitLabelFont(nameLabel, card.getName(), nameAvail, defaultFont, 5, true);
+        displayedName = card.getName();
+        applyCardNameTypography();
 
         hpLabel.setText(String.valueOf(card.getCurrentHp()));
         hpSuffix.setText("HP");
@@ -261,6 +259,23 @@ public class CardView extends VBox {
 
     public void setCard(Card card) {
         setCard(card, null);
+    }
+
+    private void applyCardNameTypography() {
+        if (displayedName == null || displayedName.isEmpty()) {
+            nameLabel.setText("");
+            nameLabel.setMaxWidth(Double.MAX_VALUE);
+            return;
+        }
+        nameLabel.setText(displayedName);
+        double cardW = BASE_DIMENSIONS[size.ordinal()][0] * scale;
+        boolean isSmall = size == Size.SMALL;
+        double reserved = (isSmall ? 50 : 70) * scale;
+        double nameAvail = Math.max(8, cardW - reserved - 6);
+        nameLabel.setMaxWidth(nameAvail);
+        double defaultFont = (isSmall ? 9.5 : (size == Size.LARGE ? 12.5 : 11)) * scale;
+        double minFont = Math.max(3, 3.5 * scale);
+        fitLabelFont(nameLabel, displayedName, nameAvail, defaultFont, minFont, true);
     }
 
     private static String buildAttackTooltip(Attack atk, Card matchupOpponent) {

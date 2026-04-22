@@ -116,7 +116,6 @@ public class DraftScreen extends VBox {
             flipContainer.setMaxSize(cardBaseWidth * scale, 370 * scale);
         }
     }
-    }
 
     private void showNextRound() {
         if (draftEngine.isDraftComplete()) {
